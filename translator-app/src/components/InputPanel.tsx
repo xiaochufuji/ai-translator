@@ -35,6 +35,8 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // 必须设置 dropEffect 才能显示允许拖拽的图标
+    e.dataTransfer.dropEffect = "copy";
   };
 
   // 处理文件拖拽
@@ -84,7 +86,7 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
   };
 
   return (
-    <div className="input-panel">
+    <div className={`input-panel ${isDragOver ? "drag-over" : ""}`}>
       <div className="panel-header">
         <span className="panel-title">输入</span>
         <div className="panel-actions">
@@ -93,7 +95,13 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
           </button>
         </div>
       </div>
-      <div className="panel-content">
+      <div
+        className="panel-content"
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
         {/* 文件信息显示 */}
         {selectedFile && (
           <div className="file-info">

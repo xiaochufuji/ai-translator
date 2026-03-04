@@ -13,6 +13,7 @@ interface LLMSettings {
   baseUrl: string;
   model: string;
   timeout: number;
+  targetLanguage?: string;
 }
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
       baseUrl: "",
       model: "gpt-4o-mini",
       timeout: 30,
+      targetLanguage: "中文",
     };
   };
 
@@ -59,9 +61,10 @@ function App() {
     setError(null);
 
     try {
+      const targetLanguage = settings.targetLanguage || "中文";
       const result = await invoke("translate", {
         text: inputText,
-        targetLanguage: "中文",
+        targetLanguage: targetLanguage,
         apiKey: settings.apiKey,
         baseUrl: settings.baseUrl || null,
         model: settings.model,
@@ -134,10 +137,26 @@ function App() {
   // 主题同步到 documentElement
   useEffect(() => {
     if (theme === "system") {
-      document.documentElement.removeAttribute("data-theme");
+      // 跟随系统时，根据系统主题设置 data-theme
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
     } else {
       document.documentElement.setAttribute("data-theme", theme);
     }
+  }, [theme]);
+
+  // 监听系统主题变化
+  useEffect(() => {
+    if (theme !== "system") return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      const isDark = mediaQuery.matches;
+      document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme]);
 
   // 键盘快捷键

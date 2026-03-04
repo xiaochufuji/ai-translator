@@ -1,6 +1,6 @@
 # Project Progress
 
-## Current Milestone: 功能增强 - 主题切换优化 ✅
+## Current Milestone: v0.2.0 - 主题跟随、文件拖拽和目标语言选择 ✅
 
 ### Status: Completed
 
@@ -45,6 +45,13 @@
 - [x] 修复主题同步到 documentElement
 - [x] 确保全局样式（滚动条等）正确响应主题变化
 
+### Milestone 6: v0.2.0 功能增强 ✅
+
+- [x] 修复主题跟随系统问题（监听系统主题变化）
+- [x] 修复文件拖拽功能（panel-content 事件处理 + CSS pointer-events）
+- [x] 实现目标语言选择功能（10 种语言可选，默认中文）
+- [x] 更新版本号到 0.2.0
+
 ---
 
 ## 测试验证
@@ -67,16 +74,30 @@
 | `Ctrl+,` | 打开设置 ✅ |
 | `Escape` | 返回翻译页面 ✅ |
 
+### 目标语言选择 ✅
+
+支持的语言：
+- 中文（默认）
+- English (英文)
+- 日本語 (日文)
+- 한국어 (韩文)
+- Français (法文)
+- Deutsch (德文)
+- Español (西班牙文)
+- Italiano (意大利文)
+- Português (葡萄牙文)
+- Русский (俄文)
+
 ---
 
-## Next Milestone: 功能增强
+## Next Milestone: v0.3.0 计划
 
 ### Planned Tasks
 
-1. 多语言选择（源语言/目标语言）
-2. 翻译历史记录
-3. 批量文件翻译
-4. 更多文件格式支持
+1. 翻译历史记录
+2. 批量文件翻译
+3. 更多文件格式支持（PDF、Word 等）
+4. 源语言自动检测/选择
 
 ---
 

@@ -36,6 +36,12 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: relative;
+}
+
+/* 拖拽时的整个面板高亮 */
+.input-panel.drag-over .panel-content {
+  background-color: var(--bg-secondary);
 }
 
 .input-panel .textarea {
@@ -52,6 +58,12 @@
   color: var(--text-primary);
   background-color: var(--bg-primary);
   border-radius: 6px;
+  pointer-events: auto;
+}
+
+/* 拖拽时禁用 textarea 的 pointer-events，让事件穿透到父元素 */
+.input-panel.drag-over .textarea {
+  pointer-events: none;
 }
 
 .input-panel .textarea::placeholder {
