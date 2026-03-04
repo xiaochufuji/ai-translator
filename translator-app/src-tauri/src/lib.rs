@@ -30,8 +30,20 @@ async fn translate(
     let text_length = text.len();
     eprintln!("[DEBUG] Input text length: {}", text_length);
 
+    // 根据文本长度动态计算最小超时时间
+    // 短文本至少 15 秒，长文本最多 60 秒
+    let min_timeout = if text_length < 100 {
+        15
+    } else if text_length < 500 {
+        30 + ((text_length - 100) / 20) as u64
+    } else {
+        60
+    };
+    let effective_timeout = timeout.max(min_timeout);
+    eprintln!("[DEBUG] Effective timeout: {}s (user: {}s, min: {}s)", effective_timeout, timeout, min_timeout);
+
     let client = Client::builder()
-        .timeout(std::time::Duration::from_secs(timeout))
+        .timeout(std::time::Duration::from_secs(effective_timeout))
         .build()
         .map_err(|e| TranslationError {
             message: format!("创建 HTTP 客户端失败：{}", e),
@@ -39,11 +51,9 @@ async fn translate(
 
     let base_url = base_url.unwrap_or_else(|| "https://api.openai.com/v1".to_string());
 
-    let system_prompt = "你是一个专业翻译引擎。保持原文格式，不要添加解释，只输出译文。".to_string();
-    let user_prompt = format!(
-        "请将以下文本翻译成{}。\n\n原文:\n{}",
-        target_language, text
-    );
+    // 精简提示词，减少 token 数量并提高响应速度
+    let system_prompt = "直接翻译，输出结果，无解释。".to_string();
+    let user_prompt = format!("译成{}：{}", target_language, text);
 
     let request_body = serde_json::json!({
         "model": model,
@@ -65,7 +75,7 @@ async fn translate(
     eprintln!("[DEBUG] Request URL: {}", url);
     eprintln!("[DEBUG] Model: {}", model);
     eprintln!("[DEBUG] Target: {}", target_language);
-    eprintln!("[DEBUG] Timeout: {}s", timeout);
+    eprintln!("[DEBUG] Effective timeout: {}s", effective_timeout);
 
     let response = client
         .post(&url)
@@ -79,7 +89,7 @@ async fn translate(
             // 区分超时和其他错误
             if error_msg.contains("timeout") || error_msg.contains("timed out") {
                 TranslationError {
-                    message: format!("请求超时（{}s）：文本长度 {} 字符，请增加超时时间或分段翻译", timeout, text_length),
+                    message: format!("请求超时（{}s）：文本长度 {} 字符，请增加超时时间或分段翻译", effective_timeout, text_length),
                 }
             } else {
                 TranslationError {
