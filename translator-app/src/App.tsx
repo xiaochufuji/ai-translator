@@ -131,6 +131,15 @@ function App() {
     }
   };
 
+  // 主题同步到 documentElement
+  useEffect(() => {
+    if (theme === "system") {
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+  }, [theme]);
+
   // 键盘快捷键
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -171,7 +180,7 @@ function App() {
   }, [currentPage, outputText, handleTranslate]);
 
   return (
-    <div className="app-container" data-theme={theme === "system" ? undefined : theme}>
+    <div className="app-container">
       <Toolbar
         currentPage={currentPage}
         onNavigate={setCurrentPage}

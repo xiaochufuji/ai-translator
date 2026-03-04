@@ -1,6 +1,6 @@
 # Project Progress
 
-## Current Milestone: Translation Engine - 测试通过 ✅
+## Current Milestone: 功能增强 - 主题切换优化 ✅
 
 ### Status: Completed
 
@@ -39,6 +39,11 @@
 - [x] Update app icon (using Tauri default icons)
 - [x] Add keyboard shortcuts
 - [x] Improve error messages
+
+### Milestone 5: 主题切换优化 ✅
+
+- [x] 修复主题同步到 documentElement
+- [x] 确保全局样式（滚动条等）正确响应主题变化
 
 ---
 

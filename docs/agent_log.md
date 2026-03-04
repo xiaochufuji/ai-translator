@@ -2,6 +2,48 @@
 
 ---
 
+## Session 2026-03-04 (Continued)
+
+### Agent: claude-opus-4-6
+
+**Started**: 2026-03-04 (Session continuation)
+
+**Status**: 主题切换优化完成 ✅
+
+---
+
+## Milestone 5: 主题切换优化 ✅
+
+### Actions
+
+1. 修复主题同步逻辑 (App.tsx)
+   - 添加 useEffect 将 data-theme 同步到 document.documentElement
+   - 确保 CSS 选择器 `[data-theme='dark']` 对全局样式生效
+   - 移除容器上的 data-theme 属性，统一使用 documentElement
+
+2. 验证构建
+   - Rust: cargo check - PASSED
+   - Frontend: npm run build - PASSED
+
+### 修复说明
+
+**问题**: 主题切换时，滚动条等全局样式没有正确响应暗色主题
+
+**原因**: CSS 选择器 `[data-theme='dark']` 定义在全局样式中，但 data-theme 属性只设置在 `.app-container` 上，导致部分全局样式无法正确应用
+
+**解决方案**: 将 data-theme 同步到 `document.documentElement`，使主题选择器能够作用于整个文档
+
+---
+
+## Notes
+
+- 主题状态存储在 React state 中
+- 通过 useEffect 同步到 document.documentElement
+- 支持三种主题模式：system / light / dark
+- system 模式下移除 data-theme 属性，使用系统偏好
+
+---
+
 ## Session 2026-03-04
 
 ### Agent: claude-opus
