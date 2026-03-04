@@ -74,9 +74,48 @@ src/
     SettingsPage.css
 ```
 
+---
+
+## Milestone 3: Translation Engine ✅
+
+### Actions
+
+1. Updated Cargo.toml with reqwest and tokio dependencies
+2. Created Rust backend translate function (src-tauri/src/lib.rs)
+   - HTTP client with timeout
+   - LLM API call (OpenAI compatible)
+   - Error handling with custom TranslationError
+3. Updated App.tsx with translation logic
+   - invoke() call to Rust backend
+   - LLM settings from localStorage
+   - Error state management
+4. Updated Toolbar with translate button and loading state
+5. Updated OutputPanel with error display
+6. Implemented file export functionality
+   - Tauri dialog plugin for save file
+   - Fallback to blob download
+7. Added tauri-plugin-dialog and tauri-plugin-fs
+8. Updated capabilities/default.json with fs and dialog permissions
+
+### Files Modified
+
+```
+src-tauri/
+  Cargo.toml          - Added reqwest, tokio, dialog, fs plugins
+  src/lib.rs          - Added translate command
+  capabilities/default.json - Added dialog and fs permissions
+
+src/
+  App.tsx             - Added translation logic, export function
+  components/
+    Toolbar.tsx       - Added translate button with loading state
+    OutputPanel.tsx   - Added export button, error display
+```
+
 ### Build Verification
 
 ```
+Rust: cargo build - PASSED
 Frontend: npm run build - PASSED
 ```
 
@@ -86,18 +125,19 @@ Frontend: npm run build - PASSED
 
 1. `feat(scaffold): initialize Tauri + React + Rust project structure`
 2. `docs(progress): update progress and agent log after scaffold completion`
+3. `feat(ui): 完成 UI 框架开发`
 
 ---
 
 ## Next Task
 
-**Milestone 3: Translation Engine**
+**Milestone 4: Polish & Testing**
 
-1. Rust backend LLM API call function
-2. Frontend translate button handler
-3. Translation loading state
-4. Error handling
-5. File export functionality
+1. Update window title and size
+2. Add app icon
+3. Test full translation flow
+4. Add keyboard shortcuts
+5. Improve error messages
 
 ---
 
@@ -107,3 +147,4 @@ Frontend: npm run build - PASSED
 - CSS variables used for theme support
 - Settings stored in localStorage
 - Git commit convention: type(scope): description (in Chinese)
+- LLM API uses OpenAI compatible format

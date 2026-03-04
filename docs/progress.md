@@ -1,6 +1,6 @@
 # Project Progress
 
-## Current Milestone: UI Framework
+## Current Milestone: Translation Engine
 
 ### Status: Completed
 
@@ -24,17 +24,25 @@
 - [x] Toolbar component
 - [x] Settings page (theme + LLM settings)
 
+### Milestone 3: Translation Engine ✅
+
+- [x] Rust backend LLM API call function
+- [x] Frontend translate button handler
+- [x] Translation loading state
+- [x] Error handling
+- [x] File export functionality
+
 ---
 
-## Next Milestone: Translation Engine
+## Next Milestone: Polish & Testing
 
 ### Planned Tasks
 
-1. Rust backend LLM API call function
-2. Frontend translate button handler
-3. Translation loading state
-4. Error handling
-5. File export functionality
+1. Update window title and size
+2. Add app icon
+3. Test full translation flow
+4. Add keyboard shortcuts
+5. Improve error messages
 
 ---
 
@@ -59,3 +67,4 @@
 
 - Commit 1: `feat(scaffold): initialize Tauri + React + Rust project structure`
 - Commit 2: `docs(progress): update progress and agent log after scaffold completion`
+- Commit 3: `feat(ui): 完成 UI 框架开发`

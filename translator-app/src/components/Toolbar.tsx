@@ -3,15 +3,19 @@ import "./Toolbar.css";
 interface ToolbarProps {
   currentPage: "translate" | "settings";
   onNavigate: (page: "translate" | "settings") => void;
+  onTranslate: () => void;
   onClear: () => void;
   onExport: () => void;
+  isTranslating: boolean;
 }
 
 export function Toolbar({
   currentPage,
   onNavigate,
+  onTranslate,
   onClear,
   onExport,
+  isTranslating,
 }: ToolbarProps) {
   return (
     <header className="toolbar">
@@ -25,6 +29,13 @@ export function Toolbar({
         </button>
       </div>
       <div className="toolbar-right">
+        <button
+          className="btn btn-primary"
+          onClick={onTranslate}
+          disabled={isTranslating || currentPage !== "translate"}
+        >
+          {isTranslating ? "翻译中..." : "翻译"}
+        </button>
         <button
           className="btn"
           onClick={onClear}
