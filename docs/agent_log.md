@@ -8,6 +8,8 @@
 
 **Started**: 2026-03-04 09:30
 
+**Status**: 翻译功能测试通过 ✅
+
 ---
 
 ## Milestone 1: Project Scaffold ✅
@@ -72,6 +74,13 @@
 7. Added tauri-plugin-dialog and tauri-plugin-fs
 8. Updated capabilities/default.json with fs and dialog permissions
 
+### Build Verification
+
+```
+Rust: cargo build - PASSED
+Frontend: npm run build - PASSED
+```
+
 ---
 
 ## Milestone 4: Polish & Testing ✅
@@ -85,43 +94,34 @@
    - Resizable
 
 2. **Added keyboard shortcuts** (App.tsx)
-   - `Ctrl+Enter`: Translate
-   - `Ctrl+S`: Export file
-   - `Ctrl+L`: Clear input
-   - `Ctrl+,`: Open settings
-   - `Escape`: Return to translate page
+   - Ctrl+Enter: Translate
+   - Ctrl+S: Export file
+   - Ctrl+L: Clear input
+   - Ctrl+, : Open settings
+   - Escape: Return to translate page
 
 3. **Improved error messages** (OutputPanel.tsx)
    - Categorized error types
    - User-friendly error titles
    - Contextual hints
-   - Dark mode support for error display
+   - Dark mode support
 
-4. **Updated Toolbar** (Toolbar.tsx)
-   - Added tooltips with shortcut hints
-   - Button titles for accessibility
+4. **Added debug logging** (lib.rs)
+   - Request URL
+   - Model name
+   - Target language
+   - Response status
+   - Response body
 
-### Files Modified
+### 实机测试验证 ✅
 
-```
-src-tauri/
-  tauri.conf.json     - Window configuration
+**测试环境**: 阿里云通义千问 API
 
-src/
-  App.tsx             - Keyboard shortcuts (useEffect + useCallback)
-  components/
-    Toolbar.tsx       - Added tooltips
-    Toolbar.css       - Updated styles
-    OutputPanel.tsx   - Enhanced error display
-    OutputPanel.css   - Error message styles
-```
-
-### Build Verification
-
-```
-Rust: cargo build - PASSED
-Frontend: npm run build - PASSED
-```
+| 配置项 | 值 | 状态 |
+|--------|-----|------|
+| Base URL | `https://dashscope.aliyuncs.com/compatible-mode/v1` | ✅ |
+| 模型 | `qwen-plus` | ✅ |
+| 翻译功能 | - | ✅ 成功返回译文 |
 
 ---
 
@@ -131,18 +131,7 @@ Frontend: npm run build - PASSED
 2. `docs(progress): update progress and agent log after scaffold completion`
 3. `feat(ui): 完成 UI 框架开发`
 4. `feat(translator): 实现翻译引擎和文件导出功能`
-
----
-
-## Next Task
-
-**Milestone 5: File Translation**
-
-1. File format detection
-2. Multiple file type support (.md, .json, etc.)
-3. Batch file translation
-4. Translation history
-5. Language selection (source/target)
+5. `feat(polish): 优化窗口配置、键盘快捷键和错误提示`
 
 ---
 
@@ -153,4 +142,5 @@ Frontend: npm run build - PASSED
 - Settings stored in localStorage
 - Git commit convention: type(scope): description (in Chinese)
 - LLM API uses OpenAI compatible format
+- 阿里云通义千问兼容模式测试通过
 - Keyboard shortcuts follow common conventions

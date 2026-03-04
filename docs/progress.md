@@ -1,6 +1,6 @@
 # Project Progress
 
-## Current Milestone: Polish & Testing
+## Current Milestone: Translation Engine - 测试通过 ✅
 
 ### Status: Completed
 
@@ -31,6 +31,7 @@
 - [x] Translation loading state
 - [x] Error handling
 - [x] File export functionality
+- [x] **实机测试通过 - 阿里云通义千问**
 
 ### Milestone 4: Polish & Testing ✅
 
@@ -41,27 +42,36 @@
 
 ---
 
-## Keyboard Shortcuts
+## 测试验证
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+Enter` | 翻译 |
-| `Ctrl+S` | 导出文件 |
-| `Ctrl+L` | 清空输入 |
-| `Ctrl+,` | 打开设置 |
-| `Escape` | 返回翻译页面 |
+### 阿里云通义千问 API ✅
+
+| 配置项 | 值 |
+|--------|-----|
+| Base URL | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| 模型 | `qwen-plus` |
+| 状态 | ✅ 翻译成功 |
+
+### 键盘快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl+Enter` | 翻译 ✅ |
+| `Ctrl+S` | 导出文件 ✅ |
+| `Ctrl+L` | 清空输入 ✅ |
+| `Ctrl+,` | 打开设置 ✅ |
+| `Escape` | 返回翻译页面 ✅ |
 
 ---
 
-## Next Milestone: File Translation
+## Next Milestone: 功能增强
 
 ### Planned Tasks
 
-1. File format detection
-2. Multiple file type support (.md, .json, etc.)
-3. Batch file translation
-4. Translation history
-5. Language selection (source/target)
+1. 多语言选择（源语言/目标语言）
+2. 翻译历史记录
+3. 批量文件翻译
+4. 更多文件格式支持
 
 ---
 
@@ -77,14 +87,15 @@
 
 | Component | Status |
 |-----------|--------|
-| Rust      | Building successfully |
-| Frontend  | Building successfully |
+| Rust      | ✅ Building successfully |
+| Frontend  | ✅ Building successfully |
 
 ---
 
 ## Git Commits
 
-- Commit 1: `feat(scaffold): initialize Tauri + React + Rust project structure`
-- Commit 2: `docs(progress): update progress and agent log after scaffold completion`
-- Commit 3: `feat(ui): 完成 UI 框架开发`
-- Commit 4: `feat(translator): 实现翻译引擎和文件导出功能`
+1. `feat(scaffold): initialize Tauri + React + Rust project structure`
+2. `docs(progress): update progress and agent log after scaffold completion`
+3. `feat(ui): 完成 UI 框架开发`
+4. `feat(translator): 实现翻译引擎和文件导出功能`
+5. `feat(polish): 优化窗口配置、键盘快捷键和错误提示`

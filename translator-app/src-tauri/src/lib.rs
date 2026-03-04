@@ -52,10 +52,15 @@ async fn translate(
                 "role": "user",
                 "content": user_prompt
             }
-        ]
+        ],
+        "stream": false
     });
 
     let url = format!("{}/chat/completions", base_url);
+
+    eprintln!("[DEBUG] Request URL: {}", url);
+    eprintln!("[DEBUG] Model: {}", model);
+    eprintln!("[DEBUG] Target: {}", target_language);
 
     let response = client
         .post(&url)
@@ -68,9 +73,12 @@ async fn translate(
             message: format!("API 请求失败：{}", e),
         })?;
 
-    if !response.status().is_success() {
-        let status = response.status();
+    let status = response.status();
+    eprintln!("[DEBUG] Response status: {}", status);
+
+    if !status.is_success() {
         let error_text = response.text().await.unwrap_or_default();
+        eprintln!("[DEBUG] Error body: {}", error_text);
         return Err(TranslationError {
             message: format!("API 返回错误 ({}): {}", status, error_text),
         });
@@ -80,12 +88,14 @@ async fn translate(
         message: format!("解析响应失败：{}", e),
     })?;
 
+    eprintln!("[DEBUG] Response: {}", result);
+
     result
         .pointer("/choices/0/message/content")
         .and_then(|v| v.as_str())
         .map(|s| s.to_string())
         .ok_or_else(|| TranslationError {
-            message: "API 返回空响应".to_string(),
+            message: format!("API 返回格式异常：{}", result),
         })
 }
 
