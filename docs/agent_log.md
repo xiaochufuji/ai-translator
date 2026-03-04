@@ -8,40 +8,22 @@
 
 **Started**: 2026-03-04 09:30
 
-**Task**: Project Scaffold - Initialize basic project structure
-
 ---
+
+## Milestone 1: Project Scaffold ✅
 
 ### Actions
 
 1. Read AI_TRANSLATOR_DEV_SPEC.md
 2. Created docs directory
-3. Created progress.md
-4. Created agent_log.md
-5. Initialized Tauri project with `npm create tauri-app`
-6. Installed npm dependencies
-7. Built Rust backend (cargo build) - success
-8. Built Frontend (npm run build) - success
-9. Initialized Git repository
-10. Created .gitignore
-11. Committed initial project structure
-
----
-
-### Completed
-
-- [x] Read project specification
-- [x] Understand project architecture
-- [x] Create docs/progress.md
-- [x] Create docs/agent_log.md
-- [x] Initialize Tauri project (Tauri v2 + React + TypeScript)
-- [x] Install npm dependencies
-- [x] Verify Rust backend builds successfully
-- [x] Verify Frontend builds successfully
-- [x] Initialize Git repository
-- [x] Create initial commit
-
----
+3. Created progress.md and agent_log.md
+4. Initialized Tauri project with `npm create tauri-app`
+5. Installed npm dependencies
+6. Built Rust backend (cargo build) - success
+7. Built Frontend (npm run build) - success
+8. Initialized Git repository
+9. Created .gitignore
+10. Committed initial project structure
 
 ### Build Verification
 
@@ -52,28 +34,76 @@ Frontend: npm run build - PASSED
 
 ---
 
-### Git Commits
+## Milestone 2: UI Framework ✅
+
+### Actions
+
+1. Created src/index.css with theme support (light/dark/system)
+2. Updated App.tsx with main layout structure
+3. Created Toolbar component (Toolbar.tsx, Toolbar.css)
+4. Created InputPanel component (InputPanel.tsx, InputPanel.css)
+   - Text input area
+   - File drag & drop support
+   - File selection display
+5. Created OutputPanel component (OutputPanel.tsx, OutputPanel.css)
+   - Translation result display
+   - Copy button
+   - Clear button
+   - Loading spinner
+6. Created SettingsPage component (SettingsPage.tsx, SettingsPage.css)
+   - Theme selection (system/light/dark)
+   - LLM API configuration
+   - LocalStorage persistence
+7. Verified build: `npm run build` - PASSED
+
+### Files Created
+
+```
+src/
+  index.css           - Global styles with CSS variables for theming
+  App.tsx             - Main app component
+  App.css             - App-specific styles
+  components/
+    Toolbar.tsx
+    Toolbar.css
+    InputPanel.tsx
+    InputPanel.css
+    OutputPanel.tsx
+    OutputPanel.css
+    SettingsPage.tsx
+    SettingsPage.css
+```
+
+### Build Verification
+
+```
+Frontend: npm run build - PASSED
+```
+
+---
+
+## Git Commits
 
 1. `feat(scaffold): initialize Tauri + React + Rust project structure`
+2. `docs(progress): update progress and agent log after scaffold completion`
 
 ---
 
-### Next Task
+## Next Task
 
-**Milestone 2: UI Framework**
+**Milestone 3: Translation Engine**
 
-1. Create main layout structure
-2. InputPanel component
-3. OutputPanel component
-4. Toolbar component
-5. Settings page
+1. Rust backend LLM API call function
+2. Frontend translate button handler
+3. Translation loading state
+4. Error handling
+5. File export functionality
 
 ---
 
-### Notes
+## Notes
 
-- Project uses Tauri v2 + Rust + React 19 + Vite + TypeScript
-- Follow Git commit convention: type(scope): description
-- Each task must be < 300 lines of code
-- Each task must be committed to Git
-- Environment: Windows 11 Pro, Rust 1.91.1, Node 24.14.0
+- Tauri v2 + React 19 + Vite + TypeScript
+- CSS variables used for theme support
+- Settings stored in localStorage
+- Git commit convention: type(scope): description (in Chinese)

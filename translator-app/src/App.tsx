@@ -1,50 +1,76 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
+import { Toolbar } from "./components/Toolbar";
+import { InputPanel } from "./components/InputPanel";
+import { OutputPanel } from "./components/OutputPanel";
+import { SettingsPage } from "./components/SettingsPage";
 import "./App.css";
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+type Page = "translate" | "settings";
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+function App() {
+  const [currentPage, setCurrentPage] = useState<Page>("translate");
+  const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
+  const [theme, setTheme] = useState<"system" | "light" | "dark">("system");
+
+  // 清空输入
+  const handleClearInput = () => {
+    setInputText("");
+    setOutputText("");
+  };
+
+  // 清空输出
+  const handleClearOutput = () => {
+    setOutputText("");
+  };
+
+  // 复制输出
+  const handleCopyOutput = async () => {
+    if (outputText) {
+      await navigator.clipboard.writeText(outputText);
+    }
+  };
+
+  // 导出文件
+  const handleExport = () => {
+    if (outputText) {
+      // TODO: 实现导出功能
+      console.log("Export:", outputText);
+    }
+  };
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div className="app-container" data-theme={theme === "system" ? undefined : theme}>
+      <Toolbar
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+        onClear={handleClearInput}
+        onExport={handleExport}
+      />
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      <main className="main-content">
+        {currentPage === "translate" ? (
+          <div className="translate-panel">
+            <InputPanel
+              value={inputText}
+              onChange={setInputText}
+              onClear={handleClearInput}
+            />
+            <OutputPanel
+              value={outputText}
+              onClear={handleClearOutput}
+              onCopy={handleCopyOutput}
+              isLoading={false}
+            />
+          </div>
+        ) : (
+          <SettingsPage
+            theme={theme}
+            onThemeChange={setTheme}
+          />
+        )}
+      </main>
+    </div>
   );
 }
 
