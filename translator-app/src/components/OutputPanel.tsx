@@ -24,6 +24,7 @@ interface OutputPanelProps {
   error?: string | null;
   targetLanguage?: string;
   onTargetLanguageChange?: (lang: string) => void;
+  showCopiedToast?: () => void;
 }
 
 export function OutputPanel({
@@ -35,6 +36,7 @@ export function OutputPanel({
   error,
   targetLanguage: propTargetLanguage = "中文",
   onTargetLanguageChange,
+  showCopiedToast,
 }: OutputPanelProps) {
   const [targetLanguage, setTargetLanguage] = useState(propTargetLanguage);
 
@@ -133,7 +135,7 @@ export function OutputPanel({
           <button className="btn-icon" onClick={onExport} title="导出" disabled={!value}>
             💾
           </button>
-          <button className="btn-icon" onClick={onCopy} title="复制" disabled={!value}>
+          <button className="btn-icon" onClick={() => { onCopy(); showCopiedToast?.(); }} title="复制" disabled={!value}>
             📋
           </button>
           <button className="btn-icon" onClick={onClear} title="清空" disabled={!value}>

@@ -21,7 +21,9 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    e.dataTransfer.dropEffect = "copy";
     setIsDragOver(true);
+    console.log('[InputPanel] Drag enter', e.dataTransfer.files.length);
   };
 
   // 处理拖拽离开
@@ -29,6 +31,7 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
+    console.log('[InputPanel] Drag leave');
   };
 
   // 处理拖拽经过
@@ -46,6 +49,7 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
     setIsDragOver(false);
 
     const files = e.dataTransfer.files;
+    console.log('[InputPanel] Drop', files.length, 'files');
     if (files && files.length > 0) {
       handleFile(files[0]);
     }
@@ -140,6 +144,10 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
           placeholder="请输入要翻译的文本..."
           value={value}
           onChange={handleTextChange}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
         />
       </div>
     </div>

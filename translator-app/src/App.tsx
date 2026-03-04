@@ -24,6 +24,15 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [theme, setTheme] = useState<"system" | "light" | "dark">("system");
   const [targetLanguage, setTargetLanguage] = useState("中文");
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  // 显示 toast 提示
+  const showToastMessage = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
 
   // 加载 LLM 设置
   const loadLLMSettings = (): LLMSettings => {
@@ -120,6 +129,7 @@ function App() {
   const handleCopyOutput = async () => {
     if (outputText) {
       await navigator.clipboard.writeText(outputText);
+      showToastMessage("已复制到剪贴板");
     }
   };
 
@@ -249,6 +259,7 @@ function App() {
               error={error}
               targetLanguage={targetLanguage}
               onTargetLanguageChange={saveTargetLanguage}
+              showCopiedToast={() => showToastMessage("已复制到剪贴板")}
             />
           </div>
         ) : (
@@ -258,6 +269,13 @@ function App() {
           />
         )}
       </main>
+
+      {/* Toast 提示 */}
+      {showToast && (
+        <div className="toast">
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }

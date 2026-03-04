@@ -90,18 +90,6 @@ export function SettingsPage({ theme, onThemeChange }: SettingsPageProps) {
         </div>
 
         <div className="form-group">
-          <label className="form-label">API Key</label>
-          <input
-            type="password"
-            className="form-input"
-            placeholder="sk-..."
-            value={llmSettings.apiKey}
-            onChange={(e) => updateSetting("apiKey", e.target.value)}
-          />
-          <p className="form-help">您的 API 密钥将存储在本地</p>
-        </div>
-
-        <div className="form-group">
           <label className="form-label">Base URL</label>
           <input
             type="url"
