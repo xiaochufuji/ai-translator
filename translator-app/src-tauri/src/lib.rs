@@ -1,5 +1,9 @@
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use tauri::{
+    tray::{TrayIconBuilder, TrayIconEvent, MouseButton},
+    Manager, Emitter,
+};
 
 // LLM 配置结构
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -135,13 +139,83 @@ async fn translate(
         })
 }
 
+/// 隐藏主窗口
+#[tauri::command]
+fn hide_window(app: tauri::AppHandle) -> Result<(), String> {
+    if let Some(window) = app.get_webview_window("main") {
+        window.hide().map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
+/// 显示主窗口
+#[tauri::command]
+fn show_window(app: tauri::AppHandle) -> Result<(), String> {
+    if let Some(window) = app.get_webview_window("main") {
+        window.show().map_err(|e| e.to_string())?;
+        window.set_focus().map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
+/// 退出应用
+#[tauri::command]
+fn exit_app(app: tauri::AppHandle) {
+    app.exit(0);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        .invoke_handler(tauri::generate_handler![translate])
+        .invoke_handler(tauri::generate_handler![translate, hide_window, show_window, exit_app])
+        .setup(|app| {
+            // 初始化系统托盘
+            let _ = TrayIconBuilder::new()
+                .icon(app.default_window_icon().unwrap().clone())
+                .on_tray_icon_event(|tray, event| {
+                    match event {
+                        TrayIconEvent::Click {
+                            button: MouseButton::Left,
+                            ..
+                        } => {
+                            // 左键单击：显示/隐藏窗口
+                            let app = tray.app_handle();
+                            if let Some(window) = app.get_webview_window("main") {
+                                let is_visible = window.is_visible().unwrap_or(false);
+                                if is_visible {
+                                    let _ = window.hide();
+                                } else {
+                                    let _ = window.show();
+                                    let _ = window.set_focus();
+                                }
+                            }
+                        }
+                        TrayIconEvent::DoubleClick { .. } => {
+                            // 双击：显示窗口
+                            let app = tray.app_handle();
+                            if let Some(window) = app.get_webview_window("main") {
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                            }
+                        }
+                        _ => {}
+                    }
+                })
+                .build(app)?;
+            Ok(())
+        })
+        .on_window_event(|window, event| {
+            // 处理窗口关闭事件
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                // 阻止默认关闭行为，由前端处理
+                api.prevent_close();
+                // 触发前端事件
+                let _ = window.emit("tauri://close-requested", ());
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import { Toolbar } from "./components/Toolbar";
 import { InputPanel } from "./components/InputPanel";
 import { OutputPanel } from "./components/OutputPanel";
 import { SettingsPage } from "./components/SettingsPage";
+import { CloseDialog } from "./components/CloseDialog";
 import "./App.css";
 
 type Page = "translate" | "settings";
@@ -26,6 +28,9 @@ function App() {
   const [targetLanguage, setTargetLanguage] = useState("中文");
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+
+  // 关闭对话框状态
+  const [showCloseDialog, setShowCloseDialog] = useState(false);
 
   // 显示 toast 提示
   const showToastMessage = (message: string) => {
@@ -192,6 +197,53 @@ function App() {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme]);
 
+  // 监听窗口关闭事件
+  useEffect(() => {
+    const unlisten = listen("tauri://close-requested", () => {
+      console.log("[App] Close requested");
+      const saved = localStorage.getItem("closePreference");
+      let preference: { action: "exit" | "hide"; dontShowAgain: boolean } | null = null;
+      if (saved) {
+        try {
+          preference = JSON.parse(saved);
+        } catch (e) {
+          console.error("Failed to parse close preference:", e);
+        }
+      }
+
+      if (preference?.dontShowAgain) {
+        // 直接执行用户偏好的操作
+        if (preference.action === "exit") {
+          invoke("exit_app");
+        } else {
+          invoke("hide_window");
+        }
+      } else {
+        // 显示关闭对话框
+        setShowCloseDialog(true);
+      }
+    });
+
+    return () => {
+      unlisten.then((fn) => fn());
+    };
+  }, []);
+
+  // 处理关闭对话框
+  const handleCloseDialogClose = async (choice: "exit" | "hide", dontShowAgain: boolean) => {
+    setShowCloseDialog(false);
+
+    if (dontShowAgain) {
+      localStorage.setItem("closePreference", JSON.stringify({ action: choice, dontShowAgain: true }));
+    }
+
+    if (choice === "exit") {
+      await invoke("exit_app");
+    } else {
+      await invoke("hide_window");
+    }
+  };
+
   // 键盘快捷键
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -275,6 +327,13 @@ function App() {
         <div className="toast">
           {toastMessage}
         </div>
+      )}
+
+      {/* 关闭确认对话框 */}
+      {showCloseDialog && (
+        <CloseDialog
+          onClose={handleCloseDialogClose}
+        />
       )}
     </div>
   );

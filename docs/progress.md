@@ -1,6 +1,6 @@
 # Project Progress
 
-## Current Milestone: v0.2.0 - 主题跟随、文件拖拽和目标语言选择 ✅
+## Current Milestone: v0.2.1 - 窗口后台运行功能 ✅
 
 ### Status: Completed
 
@@ -53,6 +53,17 @@
 - [x] 添加复制成功 Toast 提示
 - [x] 修复设置页面重复表单项
 - [x] 更新版本号到 0.2.0
+
+### Milestone 7: v0.2.1 窗口后台运行 ✅
+
+- [x] 配置 Tauri 系统托盘图标
+- [x] 实现 Rust 后端托盘初始化和事件处理
+- [x] 创建关闭对话框组件（CloseDialog.tsx, CloseDialog.css）
+- [x] 实现窗口关闭事件处理（App.tsx）
+- [x] 添加 hide_window, show_window, exit_app 命令
+- [x] 支持双击托盘图标恢复窗口
+- [x] 支持"不再提示"偏好记忆
+- [x] 更新版本号到 0.2.1
 
 ---
 
