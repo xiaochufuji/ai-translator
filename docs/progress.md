@@ -2,32 +2,37 @@
 
 ## Current Milestone: Project Scaffold
 
-### Status: In Progress
+### Status: Completed
 
 ---
 
 ## Completed Tasks
 
-- [ ] Initialize Tauri project
-- [ ] Create docs directory
-- [ ] Setup React + Vite frontend
-- [ ] Configure Rust backend
+- [x] Initialize Tauri project
+- [x] Create docs directory
+- [x] Setup React + Vite frontend
+- [x] Configure Rust backend
+- [x] Git repository initialized
 
 ---
 
-## Next Tasks
+## Next Milestone: UI Framework
 
-1. Initialize Tauri project with `npm create tauri-app`
-2. Setup basic project structure
-3. Configure build environment
+### Planned Tasks
+
+1. Create main layout structure
+2. InputPanel component
+3. OutputPanel component
+4. Toolbar component
+5. Settings page
 
 ---
 
 ## Environment
 
-- Rust: >= 1.75
-- Node: >= 20
-- Platform: Windows 11
+- Rust: 1.91.1
+- Node: 24.14.0
+- Platform: Windows 11 Pro
 
 ---
 
@@ -35,5 +40,12 @@
 
 | Component | Status |
 |-----------|--------|
-| Rust      | Not started |
-| Frontend  | Not started |
+| Rust      | Building successfully |
+| Frontend  | Building successfully |
+
+---
+
+## Git
+
+- Initial commit: `feat(scaffold): initialize Tauri + React + Rust project structure`
+- Branch: master
