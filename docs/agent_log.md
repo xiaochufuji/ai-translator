@@ -21,19 +21,31 @@
    - 使用 `window.matchMedia('(prefers-color-scheme: dark)')` 检测系统主题
    - 当主题为"system"时自动同步到 documentElement
 
-2. **修复文件拖拽功能** (InputPanel.tsx, InputPanel.css)
-   - 在 panel-content 上添加拖拽事件处理
+2. **修复文件拖拽功能** (InputPanel.tsx, InputPanel.css, main.tsx, tauri.conf.json)
+   - **最终方案**：在 Tauri 窗口配置中添加 `"dragDropEnabled": false` 禁用默认拦截
+   - 添加拖拽覆盖层（drag-overlay）在拖拽时捕获事件
+   - 使用 dragCounter 追踪拖拽进入/离开事件次数
+   - 在 main.tsx 中添加全局 dragover/drop 事件监听器
    - 设置 `dataTransfer.dropEffect = "copy"` 显示正确图标
-   - 添加 CSS `pointer-events: none` 让拖拽事件穿透 textarea
-   - 拖拽时整个面板高亮显示
+   - 拖拽时显示"释放以导入文件"提示覆盖层
+   - 拖拽成功时高亮显示整个面板
 
-3. **实现目标语言选择功能** (SettingsPage.tsx, App.tsx)
-   - 添加 10 种目标语言选择
+3. **实现目标语言选择功能** (SettingsPage.tsx, App.tsx, OutputPanel.tsx)
+   - 添加 10 种目标语言选择（中文、英文、日文、韩文、法文、德文、西班牙文、意大利文、葡萄牙文、俄文）
    - 目标语言存储在 localStorage
-   - 翻译时使用用户选择的目标语言
+   - 语言选择器放置在 OutputPanel 顶部，方便快速切换
    - 默认值为"中文"
+   - 翻译时使用用户选择的目标语言
 
-4. **更新版本号**
+4. **添加复制成功提示** (App.tsx, App.css)
+   - 添加 Toast 组件显示"已复制到剪贴板"提示
+   - 2 秒后自动消失
+   - 支持深色主题
+
+5. **修复设置页面重复表单项** (SettingsPage.tsx)
+   - 移除重复的 API Key 输入框
+
+6. **更新版本号**
    - package.json: 0.1.0 → 0.2.0
    - tauri.conf.json: 0.1.0 → 0.2.0
 
@@ -43,6 +55,14 @@
 Rust: cargo check - PASSED
 Frontend: npm run build - PASSED
 ```
+
+### 问题排查记录
+
+**拖拽失效问题**：
+- 初始方案：在 panel-content 上添加拖拽事件 + CSS pointer-events: none → 浏览器正常，Tauri 无效
+- 第二方案：添加拖拽覆盖层 → 浏览器正常，Tauri 仍无效
+- **根本原因**：Tauri 默认拦截文件拖拽事件用于"打开文件"功能
+- **最终方案**：在 `tauri.conf.json` 窗口配置中添加 `"dragDropEnabled": false`
 
 ---
 

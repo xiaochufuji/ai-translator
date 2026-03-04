@@ -11,46 +11,61 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragCounter = useRef(0); // 用于追踪拖拽事件计数
 
   // 处理文本变化
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
   };
 
-  // 处理拖拽进入
+  // 处理拖拽进入 - 使用 dragCounter 追踪
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    e.dataTransfer.dropEffect = "copy";
-    setIsDragOver(true);
-    console.log('[InputPanel] Drag enter', e.dataTransfer.files.length);
+    dragCounter.current += 1;
+    console.log('🟢 [DragEnter]', 'counter:', dragCounter.current, 'files:', e.dataTransfer.files.length, 'types:', e.dataTransfer.types);
+    console.log('🟢 [DragEnter] target:', e.target);
+
+    if (dragCounter.current === 1) {
+      setIsDragOver(true);
+      console.log('✅ Set isDragOver = true');
+    }
   };
 
   // 处理拖拽离开
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsDragOver(false);
-    console.log('[InputPanel] Drag leave');
+    dragCounter.current -= 1;
+    console.log('🔴 [DragLeave]', 'counter:', dragCounter.current, 'target:', e.target);
+
+    if (dragCounter.current === 0) {
+      setIsDragOver(false);
+      console.log('❌ Set isDragOver = false');
+    }
   };
 
-  // 处理拖拽经过
+  // 处理拖拽经过 - 必须阻止默认行为
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // 必须设置 dropEffect 才能显示允许拖拽的图标
     e.dataTransfer.dropEffect = "copy";
+    // console.log('🟡 [DragOver]');
   };
 
   // 处理文件拖拽
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    dragCounter.current = 0;
     setIsDragOver(false);
 
     const files = e.dataTransfer.files;
-    console.log('[InputPanel] Drop', files.length, 'files');
+    console.log('🔵 [Drop]', files.length, 'files');
+    console.log('🔵 [Drop] File info:', files[0]?.name, files[0]?.type, files[0]?.size);
+
     if (files && files.length > 0) {
+      console.log('📦 Processing file:', files[0]);
       handleFile(files[0]);
     }
   };
@@ -144,11 +159,19 @@ export function InputPanel({ value, onChange, onClear }: InputPanelProps) {
           placeholder="请输入要翻译的文本..."
           value={value}
           onChange={handleTextChange}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
         />
+
+        {/* 拖拽覆盖层 - 当拖拽时覆盖整个面板，防止 textarea 拦截事件 */}
+        {isDragOver && (
+          <div
+            className="drag-overlay"
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <div className="drag-overlay-text">释放以导入文件</div>
+          </div>
+        )}
       </div>
     </div>
   );
