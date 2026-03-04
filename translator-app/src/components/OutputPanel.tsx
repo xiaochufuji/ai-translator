@@ -27,11 +27,35 @@ export function OutputPanel({ value, onClear, onCopy, onExport, isLoading, error
         hint: "支持拖拽 .txt 文件"
       };
     }
+    // 超时错误
+    if (errorMsg.includes("timeout") || errorMsg.includes("超时")) {
+      return {
+        title: "请求超时",
+        message: "翻译请求超时，可能是文本过长或网络连接不稳定。",
+        hint: "建议：1. 增加超时时间 2. 分段翻译 3. 检查网络连接"
+      };
+    }
     // 网络错误
-    if (errorMsg.includes("网络") || errorMsg.includes("request")) {
+    if (errorMsg.includes("网络") || errorMsg.includes("request") || errorMsg.includes("connection")) {
       return {
         title: "网络请求失败",
         message: "无法连接到翻译服务，请检查网络连接。",
+        hint: errorMsg
+      };
+    }
+    // API 错误（认证失败）
+    if (errorMsg.includes("401") || errorMsg.includes("Unauthorized")) {
+      return {
+        title: "API 认证失败",
+        message: "API Key 无效或已过期，请检查设置。",
+        hint: "设置 → LLM API 配置 → API Key"
+      };
+    }
+    // API 错误（配额不足）
+    if (errorMsg.includes("429") || errorMsg.includes("quota") || errorMsg.includes("rate limit")) {
+      return {
+        title: "API 请求受限",
+        message: "请求频率过高或配额已用完，请稍后重试。",
         hint: errorMsg
       };
     }
@@ -43,11 +67,19 @@ export function OutputPanel({ value, onClear, onCopy, onExport, isLoading, error
         hint: "请检查 API Key 和 Base URL 配置是否正确"
       };
     }
+    // JSON 解析错误
+    if (errorMsg.includes("JSON") || errorMsg.includes("parse")) {
+      return {
+        title: "响应解析失败",
+        message: "无法解析 API 返回的数据，请稍后重试。",
+        hint: errorMsg
+      };
+    }
     // 默认错误
     return {
       title: "翻译失败",
       message: errorMsg,
-      hint: "请稍后重试"
+      hint: "请稍后重试，或检查网络和 API 配置"
     };
   };
 

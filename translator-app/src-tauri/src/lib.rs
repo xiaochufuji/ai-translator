@@ -26,6 +26,10 @@ async fn translate(
     model: String,
     timeout: u64,
 ) -> Result<String, TranslationError> {
+    // 记录输入文本长度
+    let text_length = text.len();
+    eprintln!("[DEBUG] Input text length: {}", text_length);
+
     let client = Client::builder()
         .timeout(std::time::Duration::from_secs(timeout))
         .build()
@@ -61,6 +65,7 @@ async fn translate(
     eprintln!("[DEBUG] Request URL: {}", url);
     eprintln!("[DEBUG] Model: {}", model);
     eprintln!("[DEBUG] Target: {}", target_language);
+    eprintln!("[DEBUG] Timeout: {}s", timeout);
 
     let response = client
         .post(&url)
@@ -69,8 +74,18 @@ async fn translate(
         .json(&request_body)
         .send()
         .await
-        .map_err(|e| TranslationError {
-            message: format!("API 请求失败：{}", e),
+        .map_err(|e| {
+            let error_msg = e.to_string();
+            // 区分超时和其他错误
+            if error_msg.contains("timeout") || error_msg.contains("timed out") {
+                TranslationError {
+                    message: format!("请求超时（{}s）：文本长度 {} 字符，请增加超时时间或分段翻译", timeout, text_length),
+                }
+            } else {
+                TranslationError {
+                    message: format!("API 请求失败：{}", e),
+                }
+            }
         })?;
 
     let status = response.status();
@@ -79,8 +94,19 @@ async fn translate(
     if !status.is_success() {
         let error_text = response.text().await.unwrap_or_default();
         eprintln!("[DEBUG] Error body: {}", error_text);
+
+        // 根据状态码提供更友好的错误信息
+        let error_message = match status.as_u16() {
+            401 => "API Key 无效或已过期".to_string(),
+            429 => "请求频率受限或配额已用完".to_string(),
+            400 => format!("请求参数错误：{}", error_text),
+            500 => "API 服务器内部错误".to_string(),
+            503 => "API 服务暂时不可用".to_string(),
+            _ => format!("HTTP {}", status),
+        };
+
         return Err(TranslationError {
-            message: format!("API 返回错误 ({}): {}", status, error_text),
+            message: format!("{}: {}", error_message, error_text),
         });
     }
 
@@ -88,7 +114,7 @@ async fn translate(
         message: format!("解析响应失败：{}", e),
     })?;
 
-    eprintln!("[DEBUG] Response: {}", result);
+    eprintln!("[DEBUG] Response parsed successfully");
 
     result
         .pointer("/choices/0/message/content")
