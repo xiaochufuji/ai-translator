@@ -1,4 +1,19 @@
+import { useState, useEffect } from "react";
 import "./OutputPanel.css";
+
+// 可选的目标语言列表
+const targetLanguages = [
+  { value: "中文", label: "中文" },
+  { value: "英文", label: "English" },
+  { value: "日文", label: "日本語" },
+  { value: "韩文", label: "한국어" },
+  { value: "法文", label: "Français" },
+  { value: "德文", label: "Deutsch" },
+  { value: "西班牙文", label: "Español" },
+  { value: "意大利文", label: "Italiano" },
+  { value: "葡萄牙文", label: "Português" },
+  { value: "俄文", label: "Русский" },
+];
 
 interface OutputPanelProps {
   value: string;
@@ -7,9 +22,34 @@ interface OutputPanelProps {
   onExport: () => void;
   isLoading: boolean;
   error?: string | null;
+  targetLanguage?: string;
+  onTargetLanguageChange?: (lang: string) => void;
 }
 
-export function OutputPanel({ value, onClear, onCopy, onExport, isLoading, error }: OutputPanelProps) {
+export function OutputPanel({
+  value,
+  onClear,
+  onCopy,
+  onExport,
+  isLoading,
+  error,
+  targetLanguage: propTargetLanguage = "中文",
+  onTargetLanguageChange,
+}: OutputPanelProps) {
+  const [targetLanguage, setTargetLanguage] = useState(propTargetLanguage);
+
+  // 同步外部传入的目标语言
+  useEffect(() => {
+    setTargetLanguage(propTargetLanguage);
+  }, [propTargetLanguage]);
+
+  // 处理目标语言变化
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLang = e.target.value;
+    setTargetLanguage(newLang);
+    onTargetLanguageChange?.(newLang);
+  };
+
   const getErrorMessage = (errorMsg: string) => {
     // API Key 错误
     if (errorMsg.includes("API Key") || errorMsg.includes("配置")) {
@@ -100,6 +140,21 @@ export function OutputPanel({ value, onClear, onCopy, onExport, isLoading, error
             ✕
           </button>
         </div>
+      </div>
+      {/* 目标语言选择器 */}
+      <div className="language-selector">
+        <select
+          className="language-select"
+          value={targetLanguage}
+          onChange={handleLanguageChange}
+          disabled={isLoading}
+        >
+          {targetLanguages.map((lang) => (
+            <option key={lang.value} value={lang.value}>
+              翻译成：{lang.label}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="panel-content">
         {isLoading ? (

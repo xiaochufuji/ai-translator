@@ -23,6 +23,7 @@ function App() {
   const [isTranslating, setIsTranslating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [theme, setTheme] = useState<"system" | "light" | "dark">("system");
+  const [targetLanguage, setTargetLanguage] = useState("中文");
 
   // 加载 LLM 设置
   const loadLLMSettings = (): LLMSettings => {
@@ -43,6 +44,28 @@ function App() {
     };
   };
 
+  // 保存目标语言到 localStorage
+  const saveTargetLanguage = (lang: string) => {
+    const saved = localStorage.getItem("llmSettings");
+    let settings: LLMSettings = {
+      apiKey: "",
+      baseUrl: "",
+      model: "gpt-4o-mini",
+      timeout: 30,
+      targetLanguage: "中文",
+    };
+    if (saved) {
+      try {
+        settings = JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse LLM settings:", e);
+      }
+    }
+    settings.targetLanguage = lang;
+    localStorage.setItem("llmSettings", JSON.stringify(settings));
+    setTargetLanguage(lang);
+  };
+
   // 处理翻译
   const handleTranslate = useCallback(async () => {
     if (!inputText.trim()) {
@@ -61,10 +84,10 @@ function App() {
     setError(null);
 
     try {
-      const targetLanguage = settings.targetLanguage || "中文";
+      const targetLang = targetLanguage || "中文";
       const result = await invoke("translate", {
         text: inputText,
-        targetLanguage: targetLanguage,
+        targetLanguage: targetLang,
         apiKey: settings.apiKey,
         baseUrl: settings.baseUrl || null,
         model: settings.model,
@@ -78,7 +101,7 @@ function App() {
     } finally {
       setIsTranslating(false);
     }
-  }, [inputText]);
+  }, [inputText, targetLanguage]);
 
   // 清空输入
   const handleClearInput = () => {
@@ -224,6 +247,8 @@ function App() {
               onExport={handleExport}
               isLoading={isTranslating}
               error={error}
+              targetLanguage={targetLanguage}
+              onTargetLanguageChange={saveTargetLanguage}
             />
           </div>
         ) : (

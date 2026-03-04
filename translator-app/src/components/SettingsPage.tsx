@@ -11,22 +11,7 @@ interface LLMSettings {
   baseUrl: string;
   model: string;
   timeout: number;
-  targetLanguage?: string;
 }
-
-// 可选的目标语言列表
-const targetLanguages = [
-  { value: "中文", label: "中文" },
-  { value: "英文", label: "English (英文)" },
-  { value: "日文", label: "日本語 (日文)" },
-  { value: "韩文", label: "한국어 (韩文)" },
-  { value: "法文", label: "Français (法文)" },
-  { value: "德文", label: "Deutsch (德文)" },
-  { value: "西班牙文", label: "Español (西班牙文)" },
-  { value: "意大利文", label: "Italiano (意大利文)" },
-  { value: "葡萄牙文", label: "Português (葡萄牙文)" },
-  { value: "俄文", label: "Русский (俄文)" },
-];
 
 export function SettingsPage({ theme, onThemeChange }: SettingsPageProps) {
   const [llmSettings, setLlmSettings] = useState<LLMSettings>({
@@ -34,7 +19,6 @@ export function SettingsPage({ theme, onThemeChange }: SettingsPageProps) {
     baseUrl: "",
     model: "gpt-4o-mini",
     timeout: 30,
-    targetLanguage: "中文",
   });
 
   // 加载设置
@@ -94,19 +78,15 @@ export function SettingsPage({ theme, onThemeChange }: SettingsPageProps) {
         <h3 className="settings-section-title">LLM API 配置</h3>
 
         <div className="form-group">
-          <label className="form-label">翻译目标语言</label>
-          <select
-            className="form-select"
-            value={llmSettings.targetLanguage}
-            onChange={(e) => updateSetting("targetLanguage", e.target.value)}
-          >
-            {targetLanguages.map((lang) => (
-              <option key={lang.value} value={lang.value}>
-                {lang.label}
-              </option>
-            ))}
-          </select>
-          <p className="form-help">选择译文的目标语言，默认为中文</p>
+          <label className="form-label">API Key</label>
+          <input
+            type="password"
+            className="form-input"
+            placeholder="sk-..."
+            value={llmSettings.apiKey}
+            onChange={(e) => updateSetting("apiKey", e.target.value)}
+          />
+          <p className="form-help">您的 API 密钥将存储在本地</p>
         </div>
 
         <div className="form-group">
