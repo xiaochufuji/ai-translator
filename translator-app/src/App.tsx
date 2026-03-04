@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Toolbar } from "./components/Toolbar";
 import { InputPanel } from "./components/InputPanel";
@@ -42,7 +42,7 @@ function App() {
   };
 
   // 处理翻译
-  const handleTranslate = async () => {
+  const handleTranslate = useCallback(async () => {
     if (!inputText.trim()) {
       setError("请输入要翻译的文本");
       return;
@@ -75,7 +75,7 @@ function App() {
     } finally {
       setIsTranslating(false);
     }
-  };
+  }, [inputText]);
 
   // 清空输入
   const handleClearInput = () => {
@@ -130,6 +130,45 @@ function App() {
       URL.revokeObjectURL(url);
     }
   };
+
+  // 键盘快捷键
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + Enter: 翻译
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault();
+        if (currentPage === "translate") {
+          handleTranslate();
+        }
+      }
+      // Ctrl/Cmd + S: 导出
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+        if (currentPage === "translate" && outputText) {
+          handleExport();
+        }
+      }
+      // Ctrl/Cmd + L: 清空
+      if ((e.ctrlKey || e.metaKey) && e.key === "l") {
+        e.preventDefault();
+        if (currentPage === "translate") {
+          handleClearInput();
+        }
+      }
+      // Ctrl/Cmd + ,: 打开设置
+      if ((e.ctrlKey || e.metaKey) && e.key === ",") {
+        e.preventDefault();
+        setCurrentPage("settings");
+      }
+      // Escape: 返回翻译页面
+      if (e.key === "Escape" && currentPage === "settings") {
+        setCurrentPage("translate");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentPage, outputText, handleTranslate]);
 
   return (
     <div className="app-container" data-theme={theme === "system" ? undefined : theme}>

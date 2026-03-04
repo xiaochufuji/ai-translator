@@ -25,13 +25,6 @@
 9. Created .gitignore
 10. Committed initial project structure
 
-### Build Verification
-
-```
-Rust: cargo build - PASSED
-Frontend: npm run build - PASSED
-```
-
 ---
 
 ## Milestone 2: UI Framework ✅
@@ -56,24 +49,6 @@ Frontend: npm run build - PASSED
    - LocalStorage persistence
 7. Verified build: `npm run build` - PASSED
 
-### Files Created
-
-```
-src/
-  index.css           - Global styles with CSS variables for theming
-  App.tsx             - Main app component
-  App.css             - App-specific styles
-  components/
-    Toolbar.tsx
-    Toolbar.css
-    InputPanel.tsx
-    InputPanel.css
-    OutputPanel.tsx
-    OutputPanel.css
-    SettingsPage.tsx
-    SettingsPage.css
-```
-
 ---
 
 ## Milestone 3: Translation Engine ✅
@@ -97,19 +72,48 @@ src/
 7. Added tauri-plugin-dialog and tauri-plugin-fs
 8. Updated capabilities/default.json with fs and dialog permissions
 
+---
+
+## Milestone 4: Polish & Testing ✅
+
+### Actions
+
+1. **Updated window configuration** (tauri.conf.json)
+   - Title: "AI Translator"
+   - Size: 1000x700 (min: 800x600)
+   - Centered on screen
+   - Resizable
+
+2. **Added keyboard shortcuts** (App.tsx)
+   - `Ctrl+Enter`: Translate
+   - `Ctrl+S`: Export file
+   - `Ctrl+L`: Clear input
+   - `Ctrl+,`: Open settings
+   - `Escape`: Return to translate page
+
+3. **Improved error messages** (OutputPanel.tsx)
+   - Categorized error types
+   - User-friendly error titles
+   - Contextual hints
+   - Dark mode support for error display
+
+4. **Updated Toolbar** (Toolbar.tsx)
+   - Added tooltips with shortcut hints
+   - Button titles for accessibility
+
 ### Files Modified
 
 ```
 src-tauri/
-  Cargo.toml          - Added reqwest, tokio, dialog, fs plugins
-  src/lib.rs          - Added translate command
-  capabilities/default.json - Added dialog and fs permissions
+  tauri.conf.json     - Window configuration
 
 src/
-  App.tsx             - Added translation logic, export function
+  App.tsx             - Keyboard shortcuts (useEffect + useCallback)
   components/
-    Toolbar.tsx       - Added translate button with loading state
-    OutputPanel.tsx   - Added export button, error display
+    Toolbar.tsx       - Added tooltips
+    Toolbar.css       - Updated styles
+    OutputPanel.tsx   - Enhanced error display
+    OutputPanel.css   - Error message styles
 ```
 
 ### Build Verification
@@ -126,18 +130,19 @@ Frontend: npm run build - PASSED
 1. `feat(scaffold): initialize Tauri + React + Rust project structure`
 2. `docs(progress): update progress and agent log after scaffold completion`
 3. `feat(ui): 完成 UI 框架开发`
+4. `feat(translator): 实现翻译引擎和文件导出功能`
 
 ---
 
 ## Next Task
 
-**Milestone 4: Polish & Testing**
+**Milestone 5: File Translation**
 
-1. Update window title and size
-2. Add app icon
-3. Test full translation flow
-4. Add keyboard shortcuts
-5. Improve error messages
+1. File format detection
+2. Multiple file type support (.md, .json, etc.)
+3. Batch file translation
+4. Translation history
+5. Language selection (source/target)
 
 ---
 
@@ -148,3 +153,4 @@ Frontend: npm run build - PASSED
 - Settings stored in localStorage
 - Git commit convention: type(scope): description (in Chinese)
 - LLM API uses OpenAI compatible format
+- Keyboard shortcuts follow common conventions

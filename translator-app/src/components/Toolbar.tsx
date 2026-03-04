@@ -24,6 +24,7 @@ export function Toolbar({
         <button
           className={`btn ${currentPage === "translate" ? "btn-primary" : ""}`}
           onClick={() => onNavigate("translate")}
+          title="翻译页面 (Ctrl+L 清空)"
         >
           翻译
         </button>
@@ -33,6 +34,7 @@ export function Toolbar({
           className="btn btn-primary"
           onClick={onTranslate}
           disabled={isTranslating || currentPage !== "translate"}
+          title="翻译 (Ctrl+Enter)"
         >
           {isTranslating ? "翻译中..." : "翻译"}
         </button>
@@ -40,6 +42,7 @@ export function Toolbar({
           className="btn"
           onClick={onClear}
           disabled={currentPage !== "translate"}
+          title="清空输入 (Ctrl+L)"
         >
           清空
         </button>
@@ -47,12 +50,14 @@ export function Toolbar({
           className="btn"
           onClick={onExport}
           disabled={currentPage !== "translate"}
+          title="导出文件 (Ctrl+S)"
         >
           导出
         </button>
         <button
           className={`btn ${currentPage === "settings" ? "btn-primary" : ""}`}
           onClick={() => onNavigate("settings")}
+          title="设置 (Ctrl+,)"
         >
           设置
         </button>
