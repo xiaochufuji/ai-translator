@@ -2,6 +2,65 @@
 
 ---
 
+## Session 2026-03-04 - v0.2.1 开发（续）
+
+### Agent: claude-opus-4-6
+
+**Started**: 2026-03-04
+
+**Status**: v0.2.1 开发完成 ✅
+
+---
+
+## Milestone 7: v0.2.1 窗口后台运行功能 ✅
+
+### 问题修复记录
+
+**问题 1：托盘出现两个图标**
+- **现象**：一个有图标但右键无反应，另一个无图标但右键和双击都有反应
+- **根本原因**：`tauri.conf.json` 的 `trayIcon` 配置自动创建一个图标，同时 `TrayIconBuilder` 也创建一个图标
+- **解决方案**：
+  1. 移除 `tauri.conf.json` 中的 `trayIcon` 配置（设置为 `null`）
+  2. 在 `lib.rs` 中使用 `Image` API 手动加载图标
+  3. 在 `TrayIconBuilder` 中使用 `.icon()` 方法设置图标
+  4. 添加 `image = "0.25"` crate 依赖
+
+**问题 2：双击托盘图标后窗口立即隐藏**
+- **原因**：窗口关闭事件拦截器在所有情况下都触发前端事件
+- **解决方案**：使用 `IS_EXITING` AtomicBool 标志区分退出状态
+
+### 最终实现代码
+
+```rust
+// 托盘图标数据 (32x32 PNG)
+const TRAY_ICON_DATA: &[u8] = include_bytes!("../icons/32x32.png");
+
+fn load_tray_icon() -> Result<Image<'static>, tauri::Error> {
+    let png_data = image::load_from_memory(TRAY_ICON_DATA)
+        .map_err(|e| tauri::Error::InvalidIcon(std::io::Error::new(std::io::ErrorKind::InvalidData, e)))?
+        .into_rgba8();
+    let (width, height) = png_data.dimensions();
+    Ok(Image::new_owned(png_data.into_raw(), width, height))
+}
+
+// 在 TrayIconBuilder 中使用
+let tray = TrayIconBuilder::new()
+    .icon(load_tray_icon()?)
+    .menu(&menu)
+    // ... 事件处理
+```
+
+### 修改的文件
+
+| 文件 | 修改内容 |
+|------|----------|
+| `tauri.conf.json` | `trayIcon` 设置为 `null` |
+| `Cargo.toml` | 添加 `image = "0.25"` 依赖 |
+| `lib.rs` | 添加 `load_tray_icon()` 函数，修改 TrayIconBuilder 初始化 |
+| `lib.rs` | 修改 `exit_app` 函数，先设置 `IS_EXITING` 标志 |
+
+---
+
 ## Session 2026-03-04 - v0.2.1 开发
 
 ### Agent: claude-opus-4-6

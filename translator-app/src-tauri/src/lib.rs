@@ -1,9 +1,22 @@
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tauri::{
-    tray::{TrayIconBuilder, TrayIconEvent, MouseButton},
+    menu::{Menu, MenuItem},
+    tray::{TrayIconBuilder, TrayIconEvent, TrayIcon},
+    image::Image,
     Manager, Emitter,
 };
+
+// 托盘图标数据 (32x32 PNG)
+const TRAY_ICON_DATA: &[u8] = include_bytes!("../icons/32x32.png");
+
+fn load_tray_icon() -> Result<Image<'static>, tauri::Error> {
+    let png_data = image::load_from_memory(TRAY_ICON_DATA)
+        .map_err(|e| tauri::Error::InvalidIcon(std::io::Error::new(std::io::ErrorKind::InvalidData, e)))?
+        .into_rgba8();
+    let (width, height) = png_data.dimensions();
+    Ok(Image::new_owned(png_data.into_raw(), width, height))
+}
 
 // LLM 配置结构
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -161,8 +174,25 @@ fn show_window(app: tauri::AppHandle) -> Result<(), String> {
 /// 退出应用
 #[tauri::command]
 fn exit_app(app: tauri::AppHandle) {
+    // 先设置退出标志，避免窗口关闭事件拦截
+    IS_EXITING.store(true, Ordering::SeqCst);
+
+    // 关闭窗口
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.close();
+    }
+
+    // 退出应用
     app.exit(0);
 }
+
+// 全局标志：是否正在退出
+use std::sync::atomic::{AtomicBool, Ordering};
+static IS_EXITING: AtomicBool = AtomicBool::new(false);
+
+// 全局托盘图标引用
+use std::sync::Mutex;
+static TRAY_ICON: Mutex<Option<TrayIcon>> = Mutex::new(None);
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -172,27 +202,30 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .invoke_handler(tauri::generate_handler![translate, hide_window, show_window, exit_app])
         .setup(|app| {
+            // 创建托盘菜单
+            let show_item = MenuItem::with_id(app, "show", "显示窗口", true, None::<&str>)?;
+            let quit_item = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
+            let menu = Menu::with_items(app, &[&show_item, &quit_item])?;
+
             // 初始化系统托盘
-            let _ = TrayIconBuilder::new()
-                .icon(app.default_window_icon().unwrap().clone())
+            let tray = TrayIconBuilder::new()
+                .icon(load_tray_icon()?)
+                .menu(&menu)
+                .on_menu_event(|app, event| match event.id.as_ref() {
+                    "show" => {
+                        if let Some(window) = app.get_webview_window("main") {
+                            let _ = window.show();
+                            let _ = window.set_focus();
+                        }
+                    }
+                    "quit" => {
+                        IS_EXITING.store(true, Ordering::SeqCst);
+                        app.exit(0);
+                    }
+                    _ => {}
+                })
                 .on_tray_icon_event(|tray, event| {
                     match event {
-                        TrayIconEvent::Click {
-                            button: MouseButton::Left,
-                            ..
-                        } => {
-                            // 左键单击：显示/隐藏窗口
-                            let app = tray.app_handle();
-                            if let Some(window) = app.get_webview_window("main") {
-                                let is_visible = window.is_visible().unwrap_or(false);
-                                if is_visible {
-                                    let _ = window.hide();
-                                } else {
-                                    let _ = window.show();
-                                    let _ = window.set_focus();
-                                }
-                            }
-                        }
                         TrayIconEvent::DoubleClick { .. } => {
                             // 双击：显示窗口
                             let app = tray.app_handle();
@@ -205,11 +238,22 @@ pub fn run() {
                     }
                 })
                 .build(app)?;
+
+            // 保存托盘图标引用
+            if let Ok(mut guard) = TRAY_ICON.lock() {
+                *guard = Some(tray);
+            }
+
             Ok(())
         })
         .on_window_event(|window, event| {
             // 处理窗口关闭事件
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                // 如果正在退出，直接关闭
+                if IS_EXITING.load(Ordering::SeqCst) {
+                    // 不阻止，让窗口正常关闭
+                    return;
+                }
                 // 阻止默认关闭行为，由前端处理
                 api.prevent_close();
                 // 触发前端事件
