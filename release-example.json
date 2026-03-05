@@ -1,0 +1,11 @@
+{
+  "version": "0.2.2",
+  "notes": "## 更新内容\n\n- ✨ 新增自动升级功能\n- 🐛 修复已知问题\n\n## 使用说明\n\n点击设置页面的「检查更新」按钮即可检查并安装更新。",
+  "pub_date": "2026-03-05T00:00:00Z",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/xiaochufuji/ai-translator/releases/download/v0.2.2/translator-app_0.2.2_x64_en-US.msi",
+      "signature": ""
+    }
+  }
+}
