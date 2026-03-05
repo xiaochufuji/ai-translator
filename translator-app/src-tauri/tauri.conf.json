@@ -43,7 +43,8 @@
       "endpoints": [
         "https://github.com/xiaochufuji/ai-translator/releases/latest/download/release.json"
       ],
-      "dangerousInsecureTransportLayer": true
+      "dangerousInsecureTransportLayer": true,
+      "pubkey": ""
     }
   }
 }
