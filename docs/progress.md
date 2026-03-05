@@ -121,6 +121,19 @@
 
 ---
 
+## Completed Milestones
+
+### Milestone 8: v0.3.0 自动升级 ✅
+
+- [x] 添加 tauri-plugin-updater 插件
+- [x] 配置 GitHub Releases 作为更新源
+- [x] 创建 Updater 组件实现更新 UI
+- [x] 在设置页面集成检查更新功能
+- [x] 添加更新配置指南文档
+- [x] 更新版本号到 0.3.0
+
+---
+
 ## Environment
 
 - Rust: 1.91.1
@@ -146,3 +159,4 @@
 4. `feat(translator): 实现翻译引擎和文件导出功能`
 5. `feat(polish): 优化窗口配置、键盘快捷键和错误提示`
 6. `feat(v0.2.1): 实现窗口后台运行功能，修复托盘双图标问题`
+7. `feat(v0.3.0): 添加自动升级功能`
