@@ -23,13 +23,7 @@
       }
     ],
     "security": {
-      "csp": null,
-      "permissions": [
-        "updater:default",
-        "updater:allow-check",
-        "updater:allow-download",
-        "updater:allow-install"
-      ]
+      "csp": null
     },
     "trayIcon": null
   },
