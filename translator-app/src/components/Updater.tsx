@@ -55,13 +55,15 @@ export function Updater() {
         });
       }
     } catch (err) {
+      console.error("Update check failed:", err);
+      const errorMsg = err instanceof Error ? err.message : String(err);
       setStatus({
         checking: false,
         available: false,
         downloading: false,
         installing: false,
         uptodate: false,
-        error: err instanceof Error ? err.message : "检查更新失败",
+        error: `检查更新失败：${errorMsg}`,
         version: null,
         notes: null,
       });
@@ -89,12 +91,14 @@ export function Updater() {
         });
       }
     } catch (err) {
+      console.error("Download and install failed:", err);
+      const errorMsg = err instanceof Error ? err.message : String(err);
       setStatus((prev) => ({
         ...prev,
         downloading: false,
         installing: false,
         available: false,
-        error: err instanceof Error ? err.message : "下载安装失败",
+        error: `下载安装失败：${errorMsg}`,
       }));
     }
   };
