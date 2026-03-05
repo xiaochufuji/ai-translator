@@ -4,7 +4,7 @@
   "pub_date": "2026-03-05T00:00:00Z",
   "platforms": {
     "windows-x86_64": {
-      "url": "https://github.com/xiaochufuji/ai-translator/releases/download/v0.2.2/translator-app_0.2.2_x64_en-US.msi",
+      "url": "https://gitee.com/xiaochufuji/ai-translator/releases/download/0.3.0/translator-app_0.3.0_x64_en-US.msi",
       "signature": ""
     }
   }

@@ -7,7 +7,7 @@ AI Translator 现已支持自动升级功能。在设置页面点击「检查更
 ## 技术实现
 
 - 使用 Tauri 官方 `tauri-plugin-updater` 插件
-- 更新信息托管在 GitHub Releases
+- 更新信息托管在 Gitee Releases（国内访问更快）
 - 支持自动下载和安装
 
 ## 如何发布新版本
@@ -22,10 +22,10 @@ npm run tauri build
 构建完成后，安装包位于：
 - Windows: `src-tauri/target/release/bundle/msi/` 或 `nsis/`
 
-### 2. 创建 GitHub Release
+### 2. 创建 Gitee Release
 
-1. 访问 https://github.com/xiaochufuji/ai-translator/releases
-2. 点击 "Create a new release"
+1. 访问 https://gitee.com/xiaochufuji/ai-translator/releases
+2. 点击 "发布新版本"
 3. 创建新标签，如 `v0.2.2`
 4. 填写发布说明
 
@@ -44,7 +44,7 @@ npm run tauri build
   "pub_date": "2026-03-05T00:00:00Z",
   "platforms": {
     "windows-x86_64": {
-      "url": "https://github.com/xiaochufuji/ai-translator/releases/download/v0.2.2/translator-app_0.2.2_x64_en-US.msi",
+      "url": "https://gitee.com/xiaochufuji/ai-translator/releases/download/v0.2.2/translator-app_0.2.2_x64_en-US.msi",
       "signature": ""
     }
   }
@@ -54,26 +54,27 @@ npm run tauri build
 **注意**：
 - `version`: 必须高于当前版本号
 - `pub_date`: ISO 8601 格式
-- `url`: 必须是 GitHub Releases 的直接下载链接
+- `url`: 必须是 Gitee Releases 的直接下载链接
 - `signature`: 测试阶段可留空
 
 ### 5. 上传 release.json
 
-将 `release.json` 上传到 GitHub Releases 的资源文件中
+将 `release.json` 上传到 Gitee Releases 的附件文件中
 
 ## release.json 放置位置
 
-有两种方式：
+### 方式 1：放在 Gitee Releases（推荐）
 
-### 方式 1：放在 Releases（推荐）
-
-URL: `https://github.com/xiaochufuji/ai-translator/releases/latest/download/release.json`
+URL: `https://gitee.com/xiaochufuji/ai-translator/releases/latest/download/release.json`
 
 使用 `latest` 链接，始终指向最新版本
 
-### 方式 2：放在 Gist
+**注意**：Gitee 的下载链接格式为：
+- 下载链接：`https://gitee.com/xiaochufuji/ai-translator/releases/download/v0.2.2/文件名`
 
-1. 创建 GitHub Gist: https://gist.github.com/
+### 方式 2：放在 Gitee Gist
+
+1. 创建 Gitee Gist: https://gitee.com/ide/snippets
 2. 内容为 `release.json`
 3. 使用 Raw 链接
 
