@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import "./SettingsPage.css";
-import { Updater } from "./Updater";
 
 interface SettingsPageProps {
   theme: "system" | "light" | "dark";
@@ -129,9 +128,6 @@ export function SettingsPage({ theme, onThemeChange }: SettingsPageProps) {
           保存设置
         </button>
       </div>
-
-      {/* 软件更新 */}
-      <Updater />
     </div>
   );
 }
