@@ -40,11 +40,10 @@
   },
   "plugins": {
     "updater": {
-      "enabled": true,
       "endpoints": [
         "https://github.com/xiaochufuji/ai-translator/releases/latest/download/release.json"
       ],
-      "pubkey": ""
+      "dangerousInsecureTransportLayer": true
     }
   }
 }
